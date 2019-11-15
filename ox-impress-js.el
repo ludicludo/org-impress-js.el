@@ -88,7 +88,7 @@
 (defvar org-impress-js-title-data-plist nil
   "Data properties of title slide.")
 
-
+
 ;;; User Configuration Variables
 
 ;;;; For impress.js.
@@ -189,7 +189,7 @@ Use IMPRESSJS_SRC option in your Org file is available too."
   :package-version '(Org . "8.0")
   :type 'string)
 
-
+
 ;;; Matrix calculation functions
 
 (defmacro mnth (i j m)
@@ -297,7 +297,7 @@ rotation matrix calculated as Z-Y-X euler angles."
 	(atan (- (mnth 0 2 m)) (sqrt (+ (* (mnth 1 2 m) (mnth 1 2 m)) (* (mnth 2 2 m) (mnth 2 2 m)))))
 	(- (atan (mnth 0 1 m) (mnth 0 0 m)))))
 
-
+
 ;;; Internal Functions
 
 (defun org-impress-js-xhtml-p (info) nil)
@@ -366,7 +366,7 @@ values are given by `plist' and return plist.
        (plist-put plist 'rotate-z (vnth 2 org-impress-js-default-rot)))
   plist)
 
-
+
 ;;; Template
 
 (defun org-impress-js--build-meta-info (info)
@@ -577,7 +577,7 @@ holding export options."
    ;; Closing document.
    "</body>\n</html>"))
 
-
+
 ;;; Tables of Contents
 
 (defun org-impress-js-toc (depth info)
@@ -633,10 +633,10 @@ INFO is a plist used as a communication channel."
 		    (org-export-get-tags headline info))))
     (format "<a href=\"#/%s\">%s</a>"
 	    ;; Label.
-	    (org-export-solidify-link-text
+	    (org-export-get-reference
 	     (or (org-element-property :CUSTOM_ID headline)
 		 (concat "outline-container-"
-			 (org-export-get-headline-id headline info))))
+			 (org-export-get-headline-number headline info))) info)
 	    ;; Body.
 	    (concat
 	     (and (not (org-export-low-level-p headline info))
@@ -664,7 +664,7 @@ represents an export option."
 	(plist-put plist 'data-scale 1))
     (org-impress-js-set-default-data-plist plist)))
 
-
+
 ;;; Transcode Functions
 
 ;;;; Headline
@@ -827,7 +827,7 @@ holding contextual information."
 					 headline info) "-"))
 	     (ids (delq nil
 			(list (org-element-property :CUSTOM_ID headline)
-			      (org-export-get-headline-id headline info)
+			      (org-export-get-headline-number headline info)
 			      (org-element-property :ID headline))))
 	     (preferred-id (car ids))
 	     (extra-class (org-element-property :HTML_CONTAINER_CLASS headline))
@@ -894,10 +894,9 @@ holding contextual information."
 		class-num
 		(or (org-element-property :CUSTOM_ID parent)
 		    section-number
-		    (org-export-get-headline-id parent info))
+		    (org-export-get-headline-number parent info))
 		(or contents ""))))))
 
-
 ;;; End-user functions
 
 ;;;###autoload
